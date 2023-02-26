@@ -1,18 +1,18 @@
-const Manager = require('../lib/Manager');
+const Engineer = require('../lib/Manager');
  
-describe('create Manager', () => {
-  it('new Manager', () => {
-    let newManager = new Manager(2, "Jane Doe", "janedoe@gmail.com", 100)
+describe('create Engineer', () => {
+  it('new Engineer', () => {
+    let newEngineer = new Engineer(3, "James Doe", "jamesdoe@gmail.com", "JamesDoe")
     // Testing id
-    expect(newManager.getId()).toBe(2);
+    expect(newEngineer.getId()).toBe(3);
     // Testing name
-    expect(newManager.getName()).toBe("Jane Doe");
+    expect(newEngineer.getName()).toBe("James Doe");
     // Testing email
-    expect(newManager.getEmail()).toBe("janedoe@gmail.com");
+    expect(newEngineer.getEmail()).toBe("jamesdoe@gmail.com");
     // Testing role
-    expect(newManager.getRole()).toBe("Manager");
+    expect(newEngineer.getRole()).toBe("Engineer");
     // Testing office number 
-    expect(newManager.getOfficeNumber()).toBe(100)
+    expect(newEngineer.getGitHub()).toBe("JamesDoe")
   });
 
 });
