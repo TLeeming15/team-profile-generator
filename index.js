@@ -1,101 +1,157 @@
-class Game {
-    // Save a reference for `this` in `this` as `this` will change inside of inquirer
-    constructor() {
-      this.guessesLeft = 0;
-    }
-    // Sets the guesses to 10 and gets the next word
-    play() {
-      this.guessesLeft = 10;
-      this.nextWord();
-    }
-  
-    // Creates a new Word object using a random word from the array, asks the user for their guess
-    nextWord() {
-      const randWord = words[Math.floor(Math.random() * words.length)];
-      this.currentWord = new Word(randWord);
-      console.log("\n" + this.currentWord.toString() + "\n");
-      this.makeGuess();
-    }
-  
-    // Uses inquirer to prompt the user for their guess
-    makeGuess() {
-      this.askForLetter().then(() => {
-        // If the user has no guesses remaining after this guess, show them the word, ask if they want to play again
-        if (this.guessesLeft < 1) {
-          console.log(
-            'No guesses left! Word was: "' +
-              this.currentWord.getSolution() +
-              '"\n'
-          );
-          this.askToPlayAgain();
-  
-          // If the user guessed all letters of the current word correctly, reset guessesLeft to 10 and get the next word
-        } else if (this.currentWord.guessedCorrectly()) {
-          console.log("You got it right! Next word!");
-          this.guessesLeft = 10;
-          this.nextWord();
-  
-          // Otherwise prompt the user to guess the next letter
-        } else {
-          this.makeGuess();
-        }
-      });
-    }
-  
-    // Asks the user if they want to play again after running out of guessesLeft
-    askToPlayAgain() {
-      inquirer
-        .prompt([
-          {
-            type: "confirm",
-            name: "choice",
-            message: "Play Again?"
-          }
-        ])
-        .then(val => {
-          // If the user says yes to another game, play again, otherwise quit the game
-          if (val.choice) {
-            this.play();
-          } else {
-            this.quit();
-          }
-        });
-    }
-  
-    // Prompts the user for a letter
-    askForLetter() {
-      return inquirer
-        .prompt([
-          {
-            type: "input",
-            name: "choice",
-            message: "Guess a letter!",
-            // The users guess must be a number or letter
-            validate: val => /[a-z1-9]/gi.test(val),          
-          }
-        ])
-        .then(val => {
-          // If the user's guess is in the current word, log that they chose correctly
-          const didGuessCorrectly = this.currentWord.guessLetter(val.choice);
-          if (didGuessCorrectly) {
-            console.log(chalk.green("\nCORRECT!!!\n"));
-  
-            // Otherwise decrement `guessesLeft`, and let the user know how many guesses they have left
-          } else {
-            this.guessesLeft--;
-            console.log(chalk.red("\nINCORRECT!!!\n"));
-            console.log(this.guessesLeft + " guesses remaining!!!\n");
-          }
-  
-          console.log(this.currentWord.toString() + "\n");
-        });
-    }
-  
-    // Logs goodbye and exits the node app
-    quit() {
-      console.log("\nGoodbye!");
-      process.exit(0);
-    }
+// Packages needed for this application
+const inquirer = require('inquirer')
+const fs = require('fs')
+const Manager = require('./lib/Manager')
+const Engineer = require('./lib/Engineer')
+
+// An array of questions for user input
+const managerQuestions = [
+  {
+    type: 'input',
+    name: 'name',
+    message: 'What is the Team Managers name?',
+  },
+  {
+    type: 'input',
+    name: 'id',
+    message: 'What is the Team Managers ID?',
+  },
+  {
+    type: 'input',
+    name: 'email',
+    message: 'What is the Team Managers Email?',
+  },
+  {
+    type: 'input',
+    name: 'office',
+    message: 'What is the Team Managers office number?',
   }
-  
-  
+]
+const mainQuestions = [
+  {
+    type: 'list',
+    name: 'teamMember',
+    message: 'Which type of team member would you like to add?',
+    choices: ['Engineer', 'Intern', 'No more team members']
+  }
+]
+
+const engineerQuestions = [
+  {
+    type: 'input',
+    name: 'name',
+    message: 'What is the Engineers name?',
+  },
+  {
+    type: 'input',
+    name: 'id',
+    message: 'What is the Engineers ID?',
+  },
+  {
+    type: 'input',
+    name: 'email',
+    message: 'What is the Engineers Email?',
+  },
+  {
+    type: 'input',
+    name: 'github',
+    message: 'What is the Engineers github?',
+  }
+]
+
+const internQuestions = [
+  {
+    type: 'input',
+    name: 'name',
+    message: 'What is the Inters name?',
+  },
+  {
+    type: 'input',
+    name: 'id',
+    message: 'What is the Inters ID?',
+  },
+  {
+    type: 'input',
+    name: 'email',
+    message: 'What is the Interns Email?',
+  },
+  {
+    type: 'input',
+    name: 'school',
+    message: 'What is the Interns school?',
+  }
+]
+
+var employeesList = [];
+
+function getMainAnswers() {
+
+  inquirer.prompt(mainQuestions)
+    .then((answers) => {
+      // Call appropriate function based on what user wants to do next
+      if (answers.teamMember == "No more team members") {
+        createHTML()
+
+      } else if (answers.teamMember == "Engineer"){
+        getEngineerAnswers()
+      }
+
+
+
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
+getManagerAnswers()
+// Gets answers for the readme using inquirer
+function getManagerAnswers() {
+  inquirer.prompt(managerQuestions)
+    .then((answers) => {
+      const anEmployee = new Manager(answers.id, answers.name, answers.email, answers.office);
+      employeesList.push(anEmployee); // add to array
+      getMainAnswers(); // ask new employee or done creating team
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
+// Gets answers for the readme using inquirer
+function getEngineerAnswers() {
+  inquirer.prompt(engineerQuestions)
+    .then((answers) => {
+      const anEmployee = new Engineer(answers.id, answers.name, answers.email, answers.github);
+      employeesList.push(anEmployee); // add to array
+      getMainAnswers(); // ask new employee or done creating team
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
+
+
+
+function createHTML() {
+  // for loop over all created employees employeesList and make HTML
+  // then save as HTML file
+  var html = "<link rel='stylesheet' href='index.css'></link>"
+  html += "<h1>Team Members</h1>"
+  for (let index = 0; index < employeesList.length; index++) {
+    const anEmployee = employeesList[index];
+    html += "<p>"+anEmployee.getRole()+ " " +anEmployee.getName()+"</p>"
+  }
+
+  fs.writeFile("index.HTML", html, function (err) {
+    if (err) {
+      console.log("Unable to save file")
+    } else {
+      console.log("Success: new index.HTML file has been created in your current folder")
+    }
+  })
+}
+
+
+
+
