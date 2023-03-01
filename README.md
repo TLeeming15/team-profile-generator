@@ -37,17 +37,19 @@ Workplace teams can change day to day, this application allows a manager to disp
 
 ## Usage
 
-The following images show the application in action. This is a link to the video demonstration: 
+The following images show the application in action. This is a link to the video demonstration: https://watch.screencastify.com/v/KoKfy8GluVH0hEK1Exle
 
-This image shows the user input:
+This image shows the passed tests:
 
-<img src=".png" alt="An image of the terminal showing all of the questions and user input"/>
+<img src="images/passed-tests.png" alt="An image of the passed tests"/>
 
-This image shows the generated HTML from the user input above:
+This image shows the user input above:
 
-<img src=".png" alt="An image of the created HTML from the user input"/>
+<img src="images/user-input.png" alt="An image of the user input"/>
 
+This image shows the generated application:
 
+<img src="images/team-generated.png" alt="An image of the generated team"/>
 
 
  

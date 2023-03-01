@@ -1,4 +1,4 @@
-const Intern = require('../lib/Manager');
+const Intern = require('../lib/Intern');
  
 describe('create Intern', () => {
   it('new Intern', () => {

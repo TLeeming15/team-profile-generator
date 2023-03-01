@@ -1,4 +1,4 @@
-const Engineer = require('../lib/Manager');
+const Engineer = require('../lib/Engineer');
  
 describe('create Engineer', () => {
   it('new Engineer', () => {

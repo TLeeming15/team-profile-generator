@@ -3,6 +3,7 @@ const inquirer = require('inquirer')
 const fs = require('fs')
 const Manager = require('./lib/Manager')
 const Engineer = require('./lib/Engineer')
+const Intern = require('./lib/Intern')
 
 // An array of questions for user input
 const managerQuestions = [
@@ -63,12 +64,12 @@ const internQuestions = [
   {
     type: 'input',
     name: 'name',
-    message: 'What is the Inters name?',
+    message: 'What is the Interns name?',
   },
   {
     type: 'input',
     name: 'id',
-    message: 'What is the Inters ID?',
+    message: 'What is the Interns ID?',
   },
   {
     type: 'input',
@@ -94,7 +95,10 @@ function getMainAnswers() {
 
       } else if (answers.teamMember == "Engineer"){
         getEngineerAnswers()
+      } else if (answers.teamMember == "Intern"){
+        getInternAnswers()
       }
+
 
 
 
@@ -104,7 +108,7 @@ function getMainAnswers() {
     })
 }
 getManagerAnswers()
-// Gets answers for the readme using inquirer
+// Gets answers for the HTML using inquirer
 function getManagerAnswers() {
   inquirer.prompt(managerQuestions)
     .then((answers) => {
@@ -130,6 +134,18 @@ function getEngineerAnswers() {
     })
 }
 
+function getInternAnswers() {
+  inquirer.prompt(internQuestions)
+    .then((answers) => {
+      const anEmployee = new Intern(answers.id, answers.name, answers.email, answers.school);
+      employeesList.push(anEmployee); // add to array
+      getMainAnswers(); // ask new employee or done creating team
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
 
 
 
@@ -140,8 +156,18 @@ function createHTML() {
   html += "<h1>Team Members</h1>"
   for (let index = 0; index < employeesList.length; index++) {
     const anEmployee = employeesList[index];
-    html += "<p>"+anEmployee.getRole()+ " " +anEmployee.getName()+"</p>"
+    html += "<p>"+anEmployee.getRole()+ ": " +anEmployee.getName()+"</p>";
+    html += "<p>ID:"+anEmployee.getId()+"</p>";
+    html += "<div>Email:<a href=\"mailto:"+anEmployee.getEmail()+"\" target=\"_blank\">"+anEmployee.getEmail()+"</a></div>";
+    if(anEmployee.getRole() === "Manager"){
+      html += "<p>Office Number:"+anEmployee.getOfficeNumber()+"</p>";
+    } else if(anEmployee.getRole() === "Engineer"){
+      html += "</br></br><div>GitHub Username:<a href=\"https://github.com/"+anEmployee.getGitHub()+"\" target=\"_blank\">"+anEmployee.getGitHub()+"</a></div>";
+    } else if(anEmployee.getRole() === "Intern"){
+      html += "<p>School:"+anEmployee.getSchool()+"</p>";
+    }
   }
+
 
   fs.writeFile("index.HTML", html, function (err) {
     if (err) {
@@ -150,6 +176,7 @@ function createHTML() {
       console.log("Success: new index.HTML file has been created in your current folder")
     }
   })
+
 }
 
 
